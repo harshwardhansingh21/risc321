@@ -1,28 +1,29 @@
 module instruction_mem (
-    input wire [31:0] addr,
+    input  wire [31:0] addr,
     output wire [31:0] instr
 );
 
-// Number of 32-bit instructions stored in ROM.
-localparam MEM_WORDS = 256;
+reg [31:0] mem [0:255];
 
-reg [31:0] rom [0:MEM_WORDS-1];
-wire [31:0] word_index = addr[31:2]; // word-aligned address
-
-assign instr = rom[word_index];
+assign instr = mem[addr[9:2]];
 
 initial begin
-    integer i;
-    for (i = 0; i < MEM_WORDS; i = i + 1) begin
-        rom[i] = 32'h0000_0013; // RISC-V NOP: addi x0, x0, 0
-    end
+    mem[0] = 32'h00000093;    // addi x1, x0, 0   (x1 = 0)
+    mem[1] = 32'h00100113;    // addi x2, x0, 1   (x2 = 1)
+    mem[2] = 32'h002081b3;    // add  x3, x1, x2  (x3 = x1 + x2 = 1)
 
-    // Example program initialization. Replace these values with your own
-    // instruction words for the RISC-V 32-bit processor.
-    rom[0] = 32'h0040_0093; // addi x1, x0, 4
-    rom[1] = 32'h0080_0113; // addi x2, x0, 8
-    rom[2] = 32'h0020_81b3; // add x3, x1, x2
-    rom[3] = 32'h0010_0073; // ebreak (breakpoint) or use other instruction
+    // Halt pattern: JAL x0, 0 — jumps to itself forever.
+    // rd=x0 discards the return address write, offset=0 means
+    // target == current PC, so the CPU parks here safely instead
+    // of fetching undefined/uninitialized opcodes.
+    mem[3] = 32'h0000006f;    // jal x0, 0
+
+    // Fill remainder explicitly with the same halt pattern so
+    // nothing is left to simulator-default behavior.
+    for (int i = 4; i < 256; i = i + 1)
+        mem[i] = 32'h0000006f; // jal x0, 0
 end
 
 endmodule
+
+
