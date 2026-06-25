@@ -10,7 +10,7 @@ Simulated and verified on **Aldec Riviera-PRO via EDA Playground** with a System
 
 > Simulation output showing PC sequencing through 0x00 → 0x04 → 0x08 → 0x0C, executing three instructions before reaching a JAL-to-self halt. ALU results and control signals (is_jal, is_jump, mem_we) confirm correct fetch, decode, and execute behavior at every step.
 
-*(Add waveform screenshot here — docs/waveform.png)*
+![Waveform](waveform.png)
 
 ---
 
