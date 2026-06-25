@@ -112,11 +112,9 @@ rv32i-single-cycle/
 │
 ├── tb/
 │   ├── rv32i_tb_fixed.sv      ← class-based SV testbench (Riviera-PRO / Xcelium / VCS)
-│   └── cpu_tb_directed.v      ← directed testbench (QuestaSim Starter / iverilog)
 │
 ├── program/
 │   ├── program.hex            ← test program in hex
-│   └── program.asm            ← annotated assembly source
 │
 ├── docs/
 │   └── waveform.png           ← EPWave screenshot
@@ -132,7 +130,7 @@ rv32i-single-cycle/
 1. Go to [edaplayground.com](https://edaplayground.com)
 2. Select **Aldec Riviera-PRO** as the simulator
 3. Paste all `src/` files into the **Design** box
-4. Paste `tb/rv32i_tb_fixed.sv` into the **Testbench** box
+4. Paste `cpu_tb.sv` into the **Testbench** box
 5. Tick **Open EPWave after run**
 6. Click **Run**
 
@@ -148,7 +146,7 @@ vlog -vlog01compat alu.v
 vlog -vlog01compat data_mem.v
 vlog -vlog01compat control_unit.v
 vlog -vlog01compat cpu.v
-vlog -sv tb/rv32i_tb_fixed.sv
+vlog -sv cpu_tb.sv
 vsim tb_top
 run -all
 ```
@@ -190,9 +188,7 @@ Cycle 4+: PC=0x0C, INSTR=jal  x0,0,     CPU halts here
 
 ## Verification Approach
 
-**Directed Testbench (`cpu_tb_directed.v`)** — Monitors `pc_out`, `instruction`, and `alu_result` every clock cycle and prints a timestamped trace. Compatible with all simulators including free tiers.
-
-**Class-Based SV Testbench (`rv32i_tb_fixed.sv`)** — Full OOP-style verification environment with generator, driver, monitor, scoreboard, and environment classes. Implements a self-checking scoreboard with a 32-entry shadow register file that tracks expected state and compares against DUT outputs every cycle. Targets Aldec Riviera-PRO, Cadence Xcelium, and Synopsys VCS.
+**Class-Based SV Testbench (`cpu_tb.sv`)** — Full OOP-style verification environment with generator, driver, monitor, scoreboard, and environment classes. Implements a self-checking scoreboard with a 32-entry shadow register file that tracks expected state and compares against DUT outputs every cycle. Targets Aldec Riviera-PRO, Cadence Xcelium, and Synopsys VCS.
 
 **Coverage:**
 
@@ -226,7 +222,6 @@ Cycle 4+: PC=0x0C, INSTR=jal  x0,0,     CPU halts here
 | Tool | Purpose |
 |------|---------|
 | Aldec Riviera-PRO (EDA Playground) | Primary simulation — full SV + randomize() support |
-| QuestaSim Altera Starter Edition | Secondary simulation — directed testbench |
 | Icarus Verilog + GTKWave | Lightweight local simulation |
 | SystemVerilog 2012 | Testbench language |
 | Verilog-2001 | RTL design language |
