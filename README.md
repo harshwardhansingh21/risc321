@@ -122,29 +122,7 @@ assign rs1_data = (rs1_addr == 5'b0)                          ? 32'b0   :
 
 ## Architecture
 
-```
-        IF          ID          EX         MEM         WB
-     ┌──────┐    ┌──────┐   ┌──────┐   ┌──────┐   ┌──────┐
-clk──►  PC  │    │ Reg  │   │      │   │ Data │   │  WB  │
-     │ IMEM │    │ File │   │ ALU  │   │ Mem  │   │  Mux │
-     └──┬───┘    └──┬───┘   └──┬───┘   └──┬───┘   └──┬───┘
-        │           │          │           │           │
-     ┌──▼──────────▼─┐  ┌─────▼──────────▼─┐  ┌─────▼─────┐
-     │  IF/ID  reg   │  │  ID/EX   reg      │  │ EX/MEM reg│  │MEM/WB│
-     │instr,pc,pc+4  │  │data,ctrl,addrs    │  │ reg       │  │ reg  │
-     └───────────────┘  └───────────────────┘  └───────────┘  └──────┘
-                                   ▲
-                          ┌────────┴────────┐
-                          │  Forwarding     │◄── EX/MEM.rd, reg_we
-                          │  Unit           │◄── MEM/WB.rd, reg_we
-                          └────────┬────────┘
-                                   │ forward_a[1:0], forward_b[1:0]
-
-                 ┌─────────────────┴─────────────────┐
-                 │         Hazard Unit                │
-                 │  PCWrite, IF/ID.Write, Flush sigs  │
-                 └────────────────────────────────────┘
-```
+![Block Diagram](docs/block_diagram.jpeg)
 
 ---
 
