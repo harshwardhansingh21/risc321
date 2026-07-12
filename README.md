@@ -10,7 +10,7 @@ An upgrade of the single-cycle RV32I processor to a classic **5-stage pipeline**
 
 The waveform below shows the pipeline executing six back-to-back arithmetic instructions. The key signal to observe is `forward_a` and `forward_b` activating at exactly cycle 5 — the forwarding unit detecting RAW hazards and routing results directly to the ALU inputs with zero stall cycles.
 
- docs/waveform.png
+ ![Waveform](waveform.png)
 
 ### Reading the Waveform
 
