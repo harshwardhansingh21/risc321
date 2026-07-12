@@ -11,9 +11,13 @@ module register_file (
 reg [31:0] regs [0:31];
 
 //hardwired zero register
-assign rs1_data = (rs1_addr ==5'b00000) ? 32'b0 : regs[rs1_addr];
-assign rs2_data = (rs2_addr ==5'b00000) ? 32'b0 : regs[rs2_addr];
+assign rs1_data = (rs1_addr == 5'b0)                          ? 32'b0        :
+                  (we && rd_addr == rs1_addr && rd_addr != 0) ? rd_data      :
+                  regs[rs1_addr];
 
+assign rs2_data = (rs2_addr == 5'b0)                          ? 32'b0        :
+                  (we && rd_addr == rs2_addr && rd_addr != 0) ? rd_data      :
+                  regs[rs2_addr];
 //write logic
 always@(posedge clk) begin
 if(we && rd_addr!=5'b00000) begin//only write if we is high and rd_addr is not zero register
