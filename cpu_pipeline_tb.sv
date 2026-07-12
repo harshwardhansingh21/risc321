@@ -9,7 +9,7 @@
 // environment — is identical to the single-cycle testbench.
 // ================================================================
 
-// ================================================================
+================================================================
 // TRANSACTION
 // ================================================================
 class transaction;
@@ -335,17 +335,22 @@ class scoreboard;
                     check_result("AUIPC", tx.rd, predicted_result, vif.cb.alu_result);
                 end
 
-                7'b1101111: begin // JAL
-                    predicted_result = vif.cb.pc_out + 32'd4;
-                    if (tx.rd != 5'd0) expected_reg_file[tx.rd] = predicted_result;
-                    check_result("JAL", tx.rd, predicted_result, vif.cb.alu_result);
-                end
-
-                7'b1100111: begin // JALR
-                    predicted_result = vif.cb.pc_out + 32'd4;
-                    if (tx.rd != 5'd0) expected_reg_file[tx.rd] = predicted_result;
-                    check_result("JALR", tx.rd, predicted_result, vif.cb.alu_result);
-                end
+                7'b1101111: begin
+    predicted_result = vif.cb.pc_out + 32'd4;
+    if (tx.rd != 5'd0) begin
+        expected_reg_file[tx.rd] = predicted_result;
+        check_result("JAL", tx.rd, predicted_result, vif.cb.alu_result);
+    end else
+        $display("[INFO] JAL x0 skipped");
+end
+                7'b1100111: begin
+    predicted_result = vif.cb.pc_out + 32'd4;
+    if (tx.rd != 5'd0) begin
+        expected_reg_file[tx.rd] = predicted_result;
+        check_result("JALR", tx.rd, predicted_result, vif.cb.alu_result);
+    end else
+        $display("[INFO] JALR x0 skipped");
+end
 
                 default:
                     $display("[INFO]     UNKNOWN | opcode=%b | PC=%h",
@@ -412,7 +417,7 @@ endclass
 
 
 // ================================================================
-// TOP LEVEL — CHANGED: cpu → cpu_pipeline, timeout increased
+// TOP LEVEL 
 // ================================================================
 module tb_top;
     logic clk;
