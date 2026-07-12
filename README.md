@@ -122,7 +122,7 @@ assign rs1_data = (rs1_addr == 5'b0)                          ? 32'b0   :
 
 ## Architecture
 
-![Block Diagram](docs/block_diagram.jpeg)
+![Block Diagram](docs/block_diagram.jpg)
 
 ---
 
