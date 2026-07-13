@@ -90,9 +90,6 @@ wire [31:0] alu_result;
 wire        alu_zero;
 
 wire [6:0]  id_ex_opcode   = id_ex_immediate[6:0]; // NOTE: opcode carried via instr
-// Better: carry opcode explicitly through ID/EX
-// For simplicity extract from id_ex_rs1_addr area — 
-// actually we need to carry the full instruction or opcode
 // Here we use a dedicated approach: decode from if_id for hazard,
 // and pass is_jump flag through pipeline as a control signal.
 
@@ -122,12 +119,6 @@ assign alu_input_b = id_ex_alu_src ? id_ex_immediate : alu_input_b_fwd;
 
 // ── Branch condition ──────────────────────────────────────────
 wire [2:0]  id_ex_funct3;
-// carry funct3 through ID/EX — extracted here for branch logic
-// We reuse immediate_gen output structure; funct3 from rs2_addr area
-// For a clean implementation, carry funct3 as a separate ID/EX field.
-// Here we extract from the original instruction via IF/ID (approximation):
-// In a full implementation add funct3 to IDEX_pipeline_reg ports.
-// For now, use the control unit's alu_op to infer:
 
 wire branch_taken;
 assign branch_taken = (id_is_branch & id_pc_src & branch_condition);
@@ -197,10 +188,6 @@ pc pc_inst (
     .pc_target (pc_target),
     .pc_out    (pc_out)
 );
-// NOTE: your pc.v needs a PCWrite port added for stall support.
-// Until then, stall support is partial (load-use stall won't freeze PC).
-// Add: input wire pc_write, and gate the update:
-//   else if (pc_write) pc_reg <= pc_next;
 
 // ── 2. Instruction Memory ─────────────────────────────────────
 instruction_mem imem_inst (
